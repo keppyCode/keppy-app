@@ -1,0 +1,108 @@
+#测试登录地址为：http://127.0.0.1:8088/login.html
+#测试登出地址为：http://127.0.0.1:8088/server/signOut
+#测试未经过登录授权的地址为：http://127.0.0.1:8088/user/findByLoginName
+#测试滑动验证码：http://127.0.0.1:8088/verificationCode.html
+
+#动态数据源基于方法级别切换
+#测试多数据源地址（查询ssoCluster从库）：http://127.0.0.1:8088/events/findByLoginName
+#测试多数据源地址（查询sso主从库）：http://127.0.0.1:8088/user/findByLoginName
+########################### product base setting
+
+
+spring:
+  application:
+    name: sso-server
+##  选择 数据源
+  datasource:
+    master:
+      url: jdbc:mysql://127.0.0.1:3306/sso?&useUnicode=true&characterEncoding=utf8 #jdbc:mysql://47.96.15.129:3306/sso?&useUnicode=true&characterEncoding=utf8
+      username: root                                                              #root
+      password: 123                                                               #123456Abc)(...
+      driver-class-name: com.mysql.jdbc.Driver
+      initialSize: 5
+      minIdle: 5
+      maxActive: 20
+      maxWait: 60000
+      timeBetweenEvictionRunsMillis: 60000
+      minEvictableIdleTimeMillis: 300000
+    cluster:
+      url: jdbc:mysql://127.0.0.1:3306/ssoCluster?&useUnicode=true&characterEncoding=utf8 #jdbc:mysql://47.96.15.129:3306/sso?&useUnicode=true&characterEncoding=utf8
+      username: root                                                              #root
+      password: 123                                                               #123456Abc)(...
+      driver-class-name: com.mysql.jdbc.Driver
+      initialSize: 5
+      minIdle: 5
+      maxActive: 20
+      maxWait: 60000
+      timeBetweenEvictionRunsMillis: 60000
+      minEvictableIdleTimeMillis: 300000
+  profiles:
+    active: dev ##test(测试环境)  dev(开发环境) prod(开发环境)
+  thymeleaf:
+    prefix: classpath:/templates/
+    suffix: .html
+
+#redis单服务器配置
+  redis:
+    database: 0             #数据库
+    host: 47.96.15.129      #ip 47.96.15.129
+    port: 6379              #端口
+    password: qunyi123321   #密码qunyi123321
+    pool:
+      max-active: 300       #最大连接数
+      max-wait: 100000
+      max-idle: 100         #最大能够保持idle状态的对象数
+      min-idle: 0
+    timeout: 300
+
+server:
+  port: 8088
+  servlet:
+  path: /
+
+## mybatis 配置
+mybatis:
+  type-aliases-package: com.qunyi.modules.model
+  mapper-locations: classpath*:com/qunyi/modules/dao/mapping/*.xml
+
+
+
+## =============================统一登录客户端地址信息配置 start========================================
+ #sso-server统一登录地址
+sso-server:
+  clientUrl: http://127.0.0.1:8083/test/register
+
+## =============================统一登录客户端地址信息配置 start========================================
+
+mpmd:
+  shiro:
+    jcaptcha-enable: true           #是否启用验证码验证,不配置默认不启用
+    keep-one-enabled: true          #是否启用账号唯一用户登陆(一个账号只允许一个用户登陆，后面登陆的用户踢出前面登陆的用户),不配置默认不启用
+    force-logout-enable: true       #是否启用强制用户下线(系统管理员通过session操作迫使指定用户下线),不配置默认不启用
+    auth-cache-enabled: true        #是否启用认证\授权数据缓存，不配置默认不启用
+    #rememberme-max-age: 604800000   #记住我有效期单位为毫秒,不配置默认7天(604800000毫秒)
+    #rememberme-secret-key:          #记住我 cookie加密秘钥(长度需要为8的倍数),不配置默认一组乱序数字
+    auth-all-enabled: true         #默认支持所有认证，true支持所有，false，指定方式生效
+
+
+#server_config
+#使用了SSL，并且在ldap配置中使用了ldaps，这里同时也需要把AD的证书导入到server.keystore中。具体的可以查看java的keytool工具
+ldap-server:
+  port: 8443
+  ssl:
+    key-store: classpath:server.keystore
+    key-store-password: minibox
+    key-password: minibox
+
+#ldap_config
+#ldap配置信息，注意这里的userDn一定要写这种形式。referral设置为follow，说不清用途，似乎只有连接AD时才需要配置
+ldap:
+  contextSource:
+    url: ldap://localhost:389/o=qysm
+    base: ou=People,dc=maxcrc,dc=com
+    userDn: cn=Manager,dc=maxcrc,dc=com
+    userPwd: secret
+    referral: follow
+    domainName: maxcrc.com
+
+
