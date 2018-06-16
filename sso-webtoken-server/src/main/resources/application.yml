@@ -1,0 +1,14 @@
+#测试登录地址为：http://127.0.0.1:8080/login?redirect=http://127.0.0.1:8180/index
+spring:
+  application:
+    name: sso-webtoken-server
+  thymeleaf:
+    prefix: classpath:/templates/
+    suffix: .html
+server:
+  port: 8080
+  path: /
+
+ ###单点登录出口
+services:
+  auth: http://localhost:8080/login
