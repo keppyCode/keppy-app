@@ -20,7 +20,7 @@ public class ConfigurationFilter {
         final FilterRegistrationBean registrationBean = new FilterRegistrationBean();
         registrationBean.setFilter(new JwtFilter());
         registrationBean.setInitParameters(Collections.singletonMap("services.auth", authService));
-        registrationBean.addUrlPatterns("/protected-resource");
+        registrationBean.addUrlPatterns("/*");
 
         return registrationBean;
     }

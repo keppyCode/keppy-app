@@ -27,14 +27,14 @@ public class JwtFilter implements Filter {
             filterChain) throws ServletException, IOException {
         HttpServletRequest httpServletRequest = (HttpServletRequest) srequest;
         HttpServletResponse httpServletResponse = (HttpServletResponse) sresponse;
-
+        permitCorsRequest(httpServletResponse);
         logger.info("登录认证开始=============================authService："+authService);
         //登出
         if(httpServletRequest.getRequestURL().indexOf(logout)!=-1){
             logger.info("登录出开始=============================");
             CookieUtil.clear(httpServletResponse, jwtTokenCookieName);
-            httpServletResponse.sendRedirect(authService + "?redirect=" + httpServletRequest.getRequestURL());
-
+            httpServletResponse.sendRedirect(authService);
+            return;
         }
         String username = JwtUtil.getSubject(httpServletRequest, jwtTokenCookieName, signingKey);
         if(username == null){
@@ -48,11 +48,21 @@ public class JwtFilter implements Filter {
 
     @Override
     public void init(FilterConfig arg0) throws ServletException {
-
+        logger.info("FilterConfig>>>>init#######");
         authService = arg0.getInitParameter("services.auth");
 
     }
 
+    /**
+     * 跨域设置
+     * @param httpServletResponse
+     */
+    protected  void permitCorsRequest( HttpServletResponse httpServletResponse){
 
+        httpServletResponse.setHeader("Access-Control-Allow-Origin", "http://localhost");
+        httpServletResponse.setHeader("Access-Control-Allow-Methods", "POST,GET");
+        httpServletResponse.setHeader("Access-Control-Max-Age", "3600");
+        httpServletResponse.setHeader("Access-Control-Allow-Headers","*");
+    }
 
 }

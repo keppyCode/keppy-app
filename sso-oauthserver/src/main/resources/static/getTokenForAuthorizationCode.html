@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8"/>
+    <title>授权码模式获取token</title>
+    <link href="https://cdn.bootcss.com/bootstrap/4.1.1/css/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
+</head>
+<body>
+<div class="container">
+    <h2>授权码模式获取token1</h2>
+
+    </div>
+
+</div>
+<script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js"  crossorigin="anonymous"></script>
+<script src="https://cdn.bootcss.com/bootstrap/4.1.1/js/bootstrap.min.js" crossorigin="anonymous"></script>
+<script src="./js/jquery-1.11.1.min.js"></script>
+<script src="./js/base64.js" ></script>
+<script>
+    var authServer = "http://192.168.1.5:8080";
+    var localUrl="http://192.168.1.5:8080/getTokenForAuthorizationCode.html";
+    var  clientId = "client";
+    var secret = "secret";
+    gettoken();
+    function gettoken() {
+        var code = getCodeParm();
+        if (code == null | code == undefined) {
+            top.location.href = authServer + "/oauth/authorize?response_type=code&client_id="+clientId+"&state=1234&redirect_uri=" + encodeURIComponent(localUrl);
+        } else {
+            var basicToken = "Basic " + $.base64.encode(clientId+":"+secret);
+            $.ajax({
+                type: "POST",
+                headers: {
+                    "Content-Type": "application/x-www-form-urlencoded",
+                    "Authorization": basicToken
+                },
+                url: authServer + "/oauth/token",
+                contentType: "application/json;charset=utf-8",
+                data: {
+                    'grant_type':"authorization_code",
+                    'code':code,
+                    'redirect_uri':localUrl
+                },
+                success: function (data) {
+                    sessionStorage.token = JSON.stringify(data);
+                    permission();
+                    addCookie(getToken());
+                    location.href = localUrl;
+                }, error: function (jqXHR) {
+                    jqXHR.responseText;
+                    console.log(jqXHR.responseText);
+                    console.log(authServer+"/oauth/token鏂规硶璋冪敤寮傚父锛屽紓甯镐唬鐮�"+jqXHR.status);
+                }
+            });
+        }
+    }
+    //获取请求url授权code
+    function getCodeParm(){
+        var parms =  window.location.search.substr(1).split("&");
+        if(parms==undefined|parms==null){
+            return null;
+        }
+        var arrays = parms[0].split("=");
+        if(arrays[0]=="code"){
+            return arrays[1];
+        }else {
+            return null;
+        }
+
+    }
+</script>
+</body>
+</html>
