@@ -1,0 +1,29 @@
+#测试登录地址为：http://127.0.0.1:8080/index
+spring:
+  application:
+    name: sso-client
+  thymeleaf:
+    prefix: classpath:/templates/
+    suffix: .html
+server:
+  port: 8085
+  path: /
+
+ ###单点登录出口
+services:
+  auth: http://localhost:8080/login
+
+## 认证地址
+auth-server-url: http://192.168.1.5:8080 # 授权服务地址
+
+## 客户端认证配置
+security:
+  oauth2:
+    client:
+      client-id: client
+      client-secret: secret
+      scope: test
+      access-token-uri: ${auth-server-url}/oauth/token
+      user-authorization-uri: ${auth-server-url}/oauth/authorize
+    resource:
+      token-info-uri: ${auth-server-url}/oauth/check_token #检查令牌

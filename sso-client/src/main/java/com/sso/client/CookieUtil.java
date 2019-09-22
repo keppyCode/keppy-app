@@ -1,4 +1,4 @@
-package com.sso.resource;
+package com.sso.client;
 
 import org.springframework.boot.web.servlet.server.Session;
 import org.springframework.web.util.WebUtils;
