@@ -18,12 +18,17 @@ auth-server-url: http://192.168.1.5:8080 # 授权服务地址
 
 ## 客户端认证配置
 security:
+  basic:
+    enabled: false
   oauth2:
     client:
       client-id: client
       client-secret: secret
-      scope: test
+      scope: app
       access-token-uri: ${auth-server-url}/oauth/token
       user-authorization-uri: ${auth-server-url}/oauth/authorize
+      ##pre-established-redirect-uri: http://localhost:8080/session
+      ##//此处特别重要一定要配置，否则不会生效，配置了自定义的回调地址就必须将默认的回调禁止，原因不做过多说明。
+      use-current-uri: true
     resource:
       token-info-uri: ${auth-server-url}/oauth/check_token #检查令牌

@@ -40,7 +40,7 @@ public class MyUserDetailsService implements UserDetailsService{
      */
     private User mockUser() {
         Collection<GrantedAuthority> authorities = new HashSet<>();
-        authorities.add(new SimpleGrantedAuthority("admin"));
+        //authorities.add(new SimpleGrantedAuthority("ADMIN"));
         PasswordEncoder passwordEncoder = PasswordEncoderFactories.createDelegatingPasswordEncoder();
         String pwd = passwordEncoder.encode("123456");
         User user = new User("admin",pwd,authorities);

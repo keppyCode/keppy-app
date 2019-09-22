@@ -8,22 +8,23 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.oauth2.config.annotation.web.configuration.EnableResourceServer;
+import org.springframework.security.oauth2.config.annotation.web.configuration.ResourceServerConfigurerAdapter;
 
-@Order(10)
+/**
+ * EnableResourceServer 开启客户端outh2.0统一认证注解
+ */
 @Configuration
+@EnableResourceServer
 @EnableGlobalMethodSecurity(prePostEnabled = true)
-public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
+public class ResourceServerConfig  extends ResourceServerConfigurerAdapter {
+
 
     @Override
-    @Bean
-    public AuthenticationManager authenticationManagerBean() throws Exception {
-        return super.authenticationManagerBean();
-    }
-
-    @Override
-    protected void configure(HttpSecurity http) throws Exception {
-        http.csrf().disable()
-                .authorizeRequests()
-                .antMatchers("/css/**","/favicon.ico","/static/**","/getTokenForAuthorizationCode.html").permitAll();
+    public void configure(HttpSecurity http) throws Exception {
+        http.authorizeRequests()
+                // 允许 路径为/code/ 后面为任意信息的路径地址 不需要通过oauth2登录授权
+                .antMatchers("/static/**","/js/**","/page/**").permitAll()
+                .anyRequest().authenticated();
     }
 }

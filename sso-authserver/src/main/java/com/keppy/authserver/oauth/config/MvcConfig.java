@@ -17,6 +17,6 @@ public class MvcConfig implements WebMvcConfigurer {
         //自定义的登陆页面
         registry.addViewController("/login").setViewName("login");
         //自定义的授权页面
-        registry.addViewController("/oauth/confirm_access").setViewName("oauth");
+        //registry.addViewController("/oauth/confirm_access").setViewName("oauth");
     }
 }

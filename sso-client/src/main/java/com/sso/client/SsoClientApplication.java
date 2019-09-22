@@ -12,10 +12,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 
 import java.net.InetAddress;
 
-/**
- * EnableResourceServer 开启客户端outh2.0统一认证注解
- */
-@EnableResourceServer
+
 @SpringBootApplication
 public class SsoClientApplication {
 	private static final Logger log = LoggerFactory.getLogger(SsoClientApplication.class);
@@ -27,7 +24,7 @@ public class SsoClientApplication {
 		String contextPath = tomcatServletWebServerFactory.getContextPath();
 		System.out.println("############################################################");
 		System.out.println("本机访问地址: http://" + host + ":" + port + contextPath + "/");
-		System.out.println("本机授权码模式获取token url: http://" + host + ":" + port + contextPath + "/getTokenForAuthorizationCode.html");
+		System.out.println("本机授权码模式获取token url: http://" + host + ":" + port + contextPath + "/page/getTokenForAuthorizationCode.html");
 		System.out.println("############################################################");
 	}
 

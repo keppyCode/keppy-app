@@ -4,6 +4,7 @@ import com.keppy.authserver.oauth.serverice.MyUserDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.annotation.Order;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -30,7 +31,6 @@ import java.util.Map;
  * @ author liuqiuping
  */
 @Configuration
-@EnableAuthorizationServer
 public class AuthorizationServerConfiguration extends AuthorizationServerConfigurerAdapter {
 
 
@@ -39,9 +39,16 @@ public class AuthorizationServerConfiguration extends AuthorizationServerConfigu
     @Autowired
     private MyUserDetailsService userDetailsService;
 
+    /**
+     * 用来配置令牌端点(Token Endpoint)的安全约束.
+     * @param security
+     * @throws Exception
+     */
     @Override
     public void configure(AuthorizationServerSecurityConfigurer security) throws Exception {
-        super.configure(security);
+        //enable client to get the authenticated when using the /oauth/token to get a access token
+        //there is a 401 authentication is required if it doesn't allow form authentication for clients when access /oauth/token
+        security.checkTokenAccess("permitAll()").tokenKeyAccess("permitAll()").allowFormAuthenticationForClients();
     }
 
     /**
@@ -54,7 +61,6 @@ public class AuthorizationServerConfiguration extends AuthorizationServerConfigu
         //super.configure(clients);
         PasswordEncoder passwordEncoder = PasswordEncoderFactories.createDelegatingPasswordEncoder();
         String secret = passwordEncoder.encode("secret");
-
         //clients.jdbc()
         // 使用in-memory存储
         clients.inMemory()
@@ -62,12 +68,16 @@ public class AuthorizationServerConfiguration extends AuthorizationServerConfigu
                 .withClient("client")
                 // client_secret
                 .secret(secret)
+                .redirectUris("http://192.168.1.5:8085/page/getTokenForAuthorizationCode.html")
                 //如果为true　则不会跳转到授权页面，而是直接同意授权返回code
                 //.autoApprove(true)　　
                 // 该client允许的授权类型　
-                .authorizedGrantTypes("authorization_code","refresh_token")
+                .authorizedGrantTypes("authorization_code","refresh_token","client_credentials")
                 // 允许的授权范围
-                .scopes("app");
+                .scopes("app")
+                .accessTokenValiditySeconds(120)//Access token is only valid for 2 minutes.
+                .refreshTokenValiditySeconds(600);//Refresh token is only valid for 10 minutes.
+
     }
 
     @Override
@@ -75,7 +85,7 @@ public class AuthorizationServerConfiguration extends AuthorizationServerConfigu
 
         endpoints.authenticationManager(authenticationManager).userDetailsService(userDetailsService)
                 .accessTokenConverter(accessTokenConverter())
-                .allowedTokenEndpointRequestMethods(HttpMethod.GET, HttpMethod.POST); //支持GET  POST  请求获取token;
+                .allowedTokenEndpointRequestMethods(HttpMethod.GET, HttpMethod.POST,HttpMethod.OPTIONS); //支持GET  POST  请求获取token;
     }
 
     @Bean
