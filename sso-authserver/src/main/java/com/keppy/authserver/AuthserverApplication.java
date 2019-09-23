@@ -15,7 +15,6 @@ import java.net.InetAddress;
 import java.net.UnknownHostException;
 
 @RestController
-@EnableAuthorizationServer
 @SpringBootApplication
 public class AuthserverApplication {
 	private static final Logger log = LoggerFactory.getLogger(AuthserverApplication.class);

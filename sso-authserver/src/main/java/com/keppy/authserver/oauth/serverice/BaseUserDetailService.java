@@ -1,5 +1,8 @@
 package com.keppy.authserver.oauth.serverice;
 
+import com.keppy.authserver.oauth.model.SysUserAuthentication;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
@@ -17,17 +20,20 @@ import java.util.HashSet;
  * # security 登陆认证 MyUserDetailsService
  */
 @Service
-public class MyUserDetailsService implements UserDetailsService{
-
+public class BaseUserDetailService implements UserDetailsService{
+    private static final Logger log = LoggerFactory.getLogger(BaseUserDetailService.class);
     /**
      * 认证实现类
-     * @param name
+     * @param username
      * @return
      * @throws UsernameNotFoundException
      */
     @Override
-    public UserDetails loadUserByUsername(String name) throws UsernameNotFoundException {
-        if ("admin".equalsIgnoreCase(name)) {
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        log.info(username);
+        SysUserAuthentication user = null;
+        if ("admin".equalsIgnoreCase(username)) {
+            IntegrationAuthentication auth = IntegrationAuthenticationContext.get();
             User user = mockUser();
             return user;
         }
@@ -40,7 +46,7 @@ public class MyUserDetailsService implements UserDetailsService{
      */
     private User mockUser() {
         Collection<GrantedAuthority> authorities = new HashSet<>();
-        //authorities.add(new SimpleGrantedAuthority("ADMIN"));
+        authorities.add(new SimpleGrantedAuthority("admin"));
         PasswordEncoder passwordEncoder = PasswordEncoderFactories.createDelegatingPasswordEncoder();
         String pwd = passwordEncoder.encode("123456");
         User user = new User("admin",pwd,authorities);
