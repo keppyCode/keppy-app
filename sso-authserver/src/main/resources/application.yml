@@ -1,7 +1,7 @@
 
 ## port config
 server:
-  port: 8081
+  port: 8080
 
 ## spring config
 spring:
@@ -9,19 +9,17 @@ spring:
     name: authserver   #
   thymeleaf:
     prefix: classpath:/templates/
+    suffix: .html
   datasource:
-    ##url: jdbc:mysql://127.0.0.1:3306/authserver?useUnicode=true&amp;characterEncoding=UTF-8
-    url: jdbc:mysql://rm-bp185h7kzmkjs6u1h.mysql.rds.aliyuncs.com:3306/uc2?useUnicode=true&characterEncoding=utf-8
-    #username: root
-    #password: 123
-    username: app_developer
-    password: D24T5D6EBSuOde8L
-    driver-class-name: com.mysql.jdbc.Driver
+    url: jdbc:mysql://127.0.0.1:3306/authserver?characterEncoding=UTF-8&serverTimezone=UTC&useSSL=false
+    username: root
+    password: 123
+    driver-class-name: com.mysql.cj.jdbc.Driver
   redis:
-    database: 6
-    host: r-bp16feec27433894.redis.rds.aliyuncs.com
+    database: 1
+    host: 127.0.0.1
     port: 6379
-    password: mSmfOelVDk3ZO49y
+    password:   ## test123
     pool:
     max-active: 300
     max-wait: 100000

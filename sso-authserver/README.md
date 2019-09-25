@@ -1,6 +1,14 @@
 ## sso-oauthserver
 ## 说明
 基于spring cloud outh2.0 实现单点认证服务器
+## 特殊接口调试
+##### 请求url：/oauth/authorize
+##### 类路径：
+org.springframework.security.oauth2.provider.endpoint
+##### 请求url：/oauth/token
+##### 类路径：
+org.springframework.security.oauth2.provider.endpoint
+
 ### 1.授权码模式
 授权码模式（authorization code）是功能最完整、流程最严密的授权模式。它的特点就是通过客户端的后台服务器，
 与"服务提供商"的认证服务器进行互动。其具体的流程如下：

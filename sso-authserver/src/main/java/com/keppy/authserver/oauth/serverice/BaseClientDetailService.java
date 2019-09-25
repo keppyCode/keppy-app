@@ -1,54 +1,46 @@
 package com.keppy.authserver.oauth.serverice;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.security.core.authority.AuthorityUtils;
+import com.keppy.authserver.oauth.model.Oauth2Client;
+import com.keppy.authserver.oauth.model.SysGrantedAuthority;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.oauth2.provider.ClientDetails;
 import org.springframework.security.oauth2.provider.ClientDetailsService;
 import org.springframework.security.oauth2.provider.ClientRegistrationException;
-import org.springframework.security.oauth2.provider.NoSuchClientException;
 import org.springframework.security.oauth2.provider.client.BaseClientDetails;
+import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
-import java.util.Set;
-import java.util.concurrent.TimeUnit;
+import java.util.List;
 
+/**
+ * 注册客户端认证
+ */
+@Component
 public class BaseClientDetailService implements ClientDetailsService {
-    //使用in-memory存储模式，定义重定向url
-    private static final String[] redirectUris = {
-            "http://192.168.1.126:8085/page/getTokenForAuthorizationCode.html", "http://192.168.1.5:8085/page/getTokenForAuthorizationCode.html"};
 
-    private static final Logger log = LoggerFactory.getLogger(BaseClientDetailService.class);
-            @Override
-            public ClientDetails loadClientByClientId(String clientId) throws ClientRegistrationException {
-                     System.out.println(clientId);
-                    BaseClientDetails client = null;
-                    //这里可以改为查询数据库
-                    if("client".equals(clientId)) {
-                            log.info(clientId);
-                            client = new BaseClientDetails();
-                             client.setClientId(clientId);
-                            client.setClientSecret("secret");
-                             //client.setResourceIds(Arrays.asList("order"));
-                             client.setAuthorizedGrantTypes(Arrays.asList("authorization_code",
-                                             "client_credentials", "refresh_token", "password", "implicit"));
-                             //不同的client可以通过 一个scope 对应 权限集
-                             client.setScope(Arrays.asList("all", "select"));
-                             client.setAuthorities(AuthorityUtils.createAuthorityList("admin_role"));
-                             //1天
-                             client.setAccessTokenValiditySeconds((int) TimeUnit.DAYS.toSeconds(1));
-                             //1天
-                             client.setRefreshTokenValiditySeconds((int)TimeUnit.DAYS.toSeconds(1));
-                             Set<String> uris = new HashSet<>();
-                             uris.add("http://192.168.1.126:8085/page/getTokenForAuthorizationCode.html");
-                             uris.add("http://192.168.1.5:8085/page/getTokenForAuthorizationCode.html");
-                             client.setRegisteredRedirectUri(uris);
-                         }
-                     if(client == null) {
-                             throw new NoSuchClientException("No client width requested id: " + clientId);
-                         }
-                     return client;
-                 }
+    @Autowired
+    Oauth2Service oauth2Service;
+    @Override
+    public ClientDetails loadClientByClientId(String clientId) throws ClientRegistrationException {
 
+            List<Oauth2Client> clients1 = oauth2Service.getOauth2ClientByClientId(clientId);
+            if (clients1 == null || clients1.size() == 0) {
+                throw new ClientRegistrationException("clientId无效");
+            }
+            Oauth2Client client = clients1.get(0);
+            //String clientSecretAfterEncoder = passwordEncoder.encode(client.getClientSecret());
+            BaseClientDetails clientDetails = new BaseClientDetails();
+            clientDetails.setClientId(client.getClientId());
+            clientDetails.setClientSecret(client.getClientSecret());
+            clientDetails.setRegisteredRedirectUri(new HashSet<>(Arrays.asList(client.getRedirectUrl().split(","))));
+            clientDetails.setAuthorizedGrantTypes(Arrays.asList(client.getGrantType().split(",")));
+            //设置应用范围
+            clientDetails.setScope(Arrays.asList(client.getScope().split(",")));
+            //设置应用授权范围自动确认
+            clientDetails.isAutoApprove(client.getScope());
+            clientDetails.setAuthorities(client.getList());
+            return clientDetails;
     }
+}

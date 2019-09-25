@@ -28,13 +28,12 @@ public class MvcConfig implements WebMvcConfigurer {
                 .allowedHeaders("*");
     }
 
-    @Override
-    public void addViewControllers(ViewControllerRegistry registry) {
-        //自定义的登陆页面
-        registry.addViewController("/login").setViewName("login");
-        //自定义的授权页面
-        //registry.addViewController("/oauth/confirm_access").setViewName("oauth");
-
-
-    }
+//    @Override
+//    public void addViewControllers(ViewControllerRegistry registry) {
+//        //自定义的登陆页面
+//        registry.addViewController("/login").setViewName("login");
+//        //自定义的授权页面
+//        registry.addViewController("/oauth/confirm_access").setViewName("oauth");
+//
+//    }
 }
