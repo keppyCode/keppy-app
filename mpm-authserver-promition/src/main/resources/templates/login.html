@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+	<meta charset="UTF-8" />
+	<meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1"/>
+	<meta name="force-rendering" content="webkit"/>
+	<meta name="renderer" content="webkit"/>
+	<meta name="screen-orientation" content="portrait" />
+	<meta name="x5-orientation" content="portrait" />
+  	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+	<title th:text="#{app.title}"></title>
+	<link rel="icon shortcut" href="/images/titleIcon.ico" type="image/x-icon"/>	
+	<link rel="stylesheet" href="/css/reset.css" />
+	<link rel="stylesheet" href="/css/style.css" />
+</head>
+<body>
+	<!-- loading层 -->
+	<div class="wrapLoading">
+		<div class="loading">
+	        <div><span></span></div>
+	        <div><span></span></div>
+	        <div><span></span></div>
+	        <div><span></span></div>
+		</div>
+	</div>
+	<!-- 顶部banner -->
+	<div class="wrap-header">
+		<div class="header">
+			<div class="left">
+				<div class="pc-logo">
+					<h1><img src="/images/img_logo.png" alt="logo" /></h1>
+				</div>
+				<div class="pc-title">
+					<p th:text="#{app.name}"></p>
+					<div>
+						<!-- <span th:text="#{slogan.happy.meritpoint}"></span> -->
+						<span th:text="#{slogan.happy.work}"></span>
+						<span th:text="#{slogan.happy.life}"></span>
+					</div>
+				</div>
+			</div>
+			
+			<div class="right">
+				<!-- <span class="android"><i class="icon-android"></i>Android</span>
+				<div class="qr-android"></div>
+				<span class="iPhone"><i class="icon-iPhone"></i>iPhone</span>
+				<div class="qr-iPhone"></div> -->
+			</div>
+			
+		</div>
+	</div>
+	<!-- 登录框 -->
+	<div class="main">
+		<!--手机端才显示 -->
+		<div class="hide wrap-logo">
+			<h1 class="logo">
+				<img src="/images/img_logo.png" alt="logo" />
+				<p class="title" th:text="#{slogan.happy}">
+				</p>
+			</h1>
+		</div>
+		<div class="hide wrap-toggle">
+			<ul class="m-login">
+				<!--<li class="m-login-account" th:text="#{internet.login}"></li>-->
+				<!-- <li class="m-login-enterprise" th:text="#{enterprise.login}"></li> -->
+			</ul>
+			<!-- <ul class="m-forget">
+				<li class="m-forgetPsw" th:text="#{reset.password}"></li>
+			</ul>-->
+		</div>
+		<div class="wrapForm login">
+			<h1 class="login-account-title" th:text="#{internet.login}"></h1>
+			<h1 class="hide login-enterprise-title" th:text="#{enterprise.login}"></h1>
+			<form id="login" method="post" th:action="@{/login}" >
+				<div class="wrapInput">
+					<div class="input loginname">
+						<i class="icon ic-loginname"></i>
+						<div class="input-right">
+							<input type="text" th:placeholder="#{internet.loginname}" class="loginname-input" autocomplete="off" name="loginname"  style="background-color: rgb(255, 255, 255) !important;" />
+							<input type="text" th:placeholder="#{enterprise.loginname}" class="hide enterprise-input" autocomplete="off" name="workname" style="background-color: rgb(255, 255, 255) !important;" />
+							<i class="del"></i>
+						</div>
+					</div>
+					<div class="input">
+						<i class="icon ic-password"></i>
+						<div class="input-right">
+							<input type="password" th:placeholder="#{password}"  autocomplete="off" name="password" style="background-color: rgb(255, 255, 255) !important;" />
+							<i class="visualPsw"></i>
+						</div>
+					</div>
+					<!-- <div class="enterprise input">-->
+					
+					<div class="input entrepreneur hide">
+						<i class="icon ic-enterprise"></i>
+						<div class="input-right">
+							<input type="input" th:placeholder="#{enterprise.code}" class="enterprise-input" autocomplete="off" name="enterprise" style="background-color: rgb(255, 255, 255) !important;" />
+							<i class="del"></i>
+						</div>
+					</div>
+					
+					<div class="input verifyCode">
+						<i class="icon ic-verifyCode"></i>
+						<div class="input-right">
+							<input type="text" th:placeholder="#{verification.code}" name="verifyCode" />
+							<img src="" onclick="changeVerifyCode()" id="yzmImg" alt="验证码" />
+						</div>
+					</div>
+					<div class="err-tip"></div>
+					<div class="wrap-psw">
+						<div class="check">
+							<input type="checkbox" id="checkbox_sel" class="selectBetting" /><span class="checkbox"></span>
+							<span class="rmbPsw" th:text="#{remember.password}"></span>
+						</div>
+						<span class="forgetPsw" th:text="#{forget.password}"></span>
+					</div>
+					<div style="margin: 0 0 0 2px;">
+						<input type="hidden" name="username" />
+						<button type="button" class="loginbtn disable-btn" th:text="#{login}" disabled="true">登录</button>
+					</div>
+					<div class="toggle-text">
+						<!-- <p class="login-enterprise"><span class="login-tip" th:text="#{enterprise.login}">企业账号登录</span></p>
+						<p class="hide login-account"><span class="login-tip" th:text="#{internet.login}">切换账号登录</span></p> -->
+					</div>
+				</div>
+			</form>
+		</div>
+		
+		<div class="wrapForm form-psw">
+			<h1 class="login-forgetPsw" th:text="#{reset.password}">重置密码</h1>
+			<form>
+				<div class="wrapInput">
+					<div class="input loginname">
+						<span class="label">绑定手机号</span>
+						<div class="input-forcode">
+							<input type="text" placeholder="请输入" class="loginname-input" autocomplete="off" name="phonenum" maxlength="11" style="background-color: rgb(255, 255, 255) !important;" />
+						</div>
+					</div>
+					<div class="input">
+						<span class="label">短信验证码</span>
+						<div class="input-forcode input-code">
+							<input type="text" placeholder="请输入" class="loginname-input" autocomplete="off" name="msgCode"  style="background-color: rgb(255, 255, 255) !important;" />
+						</div>
+						<span class="send-code disable-btn">发送验证码</span>
+					</div>
+					<div class="input">
+						<span class="label">设置新密码</span>
+						<div class="input-forcode">
+							<input type="password" placeholder="密码" autocomplete="off" name="newPsw" style="background-color: rgb(255, 255, 255) !important;" />
+							<i class="visualPsw"></i>
+						</div>
+						<div class="input-tip">
+							<p>密码含字母、数字、符号至少2种，长度不低于6位</p>
+						</div>
+					</div>
+					<div class="err-tip"></div>
+					<div style="margin: 0 0 0 2px;">
+						<input type="hidden" name="username" />
+						<button type="button" class="comfirebtn disable-btn" disabled="true">确定</button>
+					</div>
+					<div class="toggle-text">
+						<p class="to-login">已有账号 <span class="login-tip">去登录</span></p>
+					</div>
+				</div>
+			</form>
+		</div>
+		
+	</div>
+	<!-- 页脚 -->
+		<div class="login-footer">
+			<!-- <p th:text="#{app.name.footer}">群艺应用系统管理平台v1.0.0</p> -->
+		</div>
+	<!-- 遮罩层 -->
+	<div class="mask"></div> 
+	<!-- 遮罩层里的提示框 -->
+	<div class="tipbox">
+		<p class="msg">请联系管理员</p>
+		<span class="back" onclick="hideMask()">知道了</span>
+	</div>
+	<div class="suctipsbox">
+		<i></i>
+		<p class="msg">修改成功</p>
+	</div>
+	
+	<script src="/js/jquery_2.1.4.min.js?v=v1.01"></script>
+	<script src='/js/index.js?v=v1.01'></script>
+</body>
+</html>

@@ -1,0 +1,40 @@
+mpm:
+  registercenter: http://localhost:8081/eureka/
+  portalUri: https://yun-dev.jifenzhi.info
+  enterpriseUsercenterUrl: https://uc-dev.jifenzhi.com
+  commonUsercenterUrl: https://uc-dev.jifenzhi.info
+spring:
+  application:
+    name: authserver
+  datasource:
+    url: jdbc:mysql://rm-bp185h7kzmkjs6u1h.mysql.rds.aliyuncs.com:3306/uc?useUnicode=true&characterEncoding=utf-8
+    username: app_developer
+    password: D24T5D6EBSuOde8L
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    initialSize: 50
+    minIdle: 20
+    maxActive: 100
+    maxWait: 60000
+    timeBetweenEvictionRunsMillis: 60000
+    minEvictableIdleTimeMillis: 300000
+    tomcat:
+      test-on-borrow: false
+      test-while-idle: true
+      time-between-eviction-runs-millis: 18800
+      validation-query: select 1
+  redis:
+    database: 5
+    host: r-bp16feec27433894.redis.rds.aliyuncs.com
+    port: 6379
+    password: mSmfOelVDk3ZO49y
+    pool:
+      max-active: 300
+      max-wait: 100000
+      max-idle: 100
+      min-idle: 0
+    timeout: 60000
+  thymeleaf:
+    prefix: classpath:/templates/
+    suffix: .html
+server:
+  port: 8082

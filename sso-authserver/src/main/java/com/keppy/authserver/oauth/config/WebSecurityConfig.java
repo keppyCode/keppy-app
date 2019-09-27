@@ -7,6 +7,7 @@ import org.springframework.boot.autoconfigure.security.SecurityProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -59,49 +60,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
 
-        http.csrf().disable()//禁用了 csrf 功能
-                .authorizeRequests().antMatchers("/oauth/token","/oauth/authorize").permitAll()
-                //.anyRequest().//其他没有限定的请求，允许访问
-                .and().anonymous()//对于没有配置权限的其他请求允许匿名访问
-                .and().formLogin()//使用 spring security 默认登录页面
-                .and().httpBasic();//启用http 基础验证
-//                .and().logout()
-//                .deleteCookies("JSESSIONID").addLogoutHandler(new LogoutHandler() {
-//
-//            @Override
-//            public void logout(HttpServletRequest request, HttpServletResponse response,
-//                               Authentication authentication) {
-//                String userid = null;
-//                String url = request.getParameter("redirect_uri");
-//                if (authentication != null) {
-//                    userid = authentication.getName();
-//                } else if (SecurityContextHolder.getContext().getAuthentication() != null) {
-//                    UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext()
-//                            .getAuthentication().getPrincipal();
-//                    userid = userDetails.getUsername();
-//                }
-//                request.getSession().invalidate();
-//                SecurityContext context = SecurityContextHolder.getContext();
-//                context.setAuthentication(null);
-//                SecurityContextHolder.clearContext();
-//                Cookie[] cookies = request.getCookies();
-//                if (cookies != null) {
-//                    for (Cookie ck : cookies) {
-//                        ck.setMaxAge(0);
-//                        ck.setValue(null);
-//                        response.addCookie(ck);
-//                    }
-//                }
-//                if (StringUtils.isNotBlank(url)) {
-//                    try {
-//                        response.sendRedirect(url);
-//                    } catch (IOException e) {
-//                        // TODO Auto-generated catch block
-//                        e.printStackTrace();
-//                    }
-//                }
-//            }
-//        }).permitAll();
+        http.headers().frameOptions().disable().and().cors().and().csrf().disable();
+        http.authorizeRequests().antMatchers(HttpMethod.OPTIONS, "**").permitAll();
+        http.authorizeRequests().antMatchers(AUTH_LIST).permitAll().anyRequest().authenticated();
     }
 
 
